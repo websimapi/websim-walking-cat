@@ -56,7 +56,6 @@ export class Cat {
         } else {
             if (this.currentAction === 'walk') {
                 this.stopAnimation('walk');
-                this.currentAction = null;
             }
         }
 
@@ -67,7 +66,10 @@ export class Cat {
 
     playAnimation(name) {
         if (this.animations[name]) {
-            this.animations[name].reset().play();
+            if(this.currentAction && this.animations[this.currentAction]) {
+                this.animations[this.currentAction].fadeOut(0.2);
+            }
+            this.animations[name].reset().setEffectiveTimeScale(1).setEffectiveWeight(1).fadeIn(0.2).play();
             this.currentAction = name;
         }
     }
@@ -75,6 +77,7 @@ export class Cat {
     stopAnimation(name) {
         if (this.animations[name]) {
             this.animations[name].fadeOut(0.2);
+            this.currentAction = null;
         }
     }
 }
