@@ -87,33 +87,21 @@ class Game {
         
         if (this.cat && this.cat.isLoaded) {
             const moveDirection = this.controls.getDirection();
+
+            // Store position before update
+            const oldPosition = this.cat.model.position.clone();
+
             this.cat.update(deltaTime, moveDirection);
 
             // Camera follow logic
-            const cat = this.cat.model;
-            
-            // Desired offset from the cat
-            const offset = new THREE.Vector3(0, 4, 8);
-            
-            // Apply cat's rotation to the offset
-            offset.applyQuaternion(cat.quaternion);
-            
-            // Add cat's position to get the desired camera position
-            offset.add(cat.position);
+            const newPosition = this.cat.model.position;
+            const delta = new THREE.Vector3().subVectors(newPosition, oldPosition);
 
-            // Get current camera offset from the cat
-            const currentOffset = new THREE.Vector3().subVectors(this.camera.position, cat.position);
-            
-            // Blend the two offsets for smooth transition
-            const smoothedOffset = currentOffset.lerp(offset, 0.05);
+            // Move camera by the same amount the cat moved
+            this.camera.position.add(delta);
 
-            // Calculate new camera position
-            const newCameraPosition = cat.position.clone().add(smoothedOffset);
-
-            this.camera.position.copy(newCameraPosition);
-            
-            // Update orbit controls target
-            this.orbitControls.target.copy(cat.position);
+            // Update orbit controls target to the cat's new position
+            this.orbitControls.target.copy(newPosition);
         }
         
         if (this.orbitControls) {
