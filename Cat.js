@@ -11,26 +11,30 @@ export class Cat {
         this.isLoaded = false;
         this.speed = 2.5;
 
-        this.load();
+        this.loadPromise = this.load();
     }
 
     load() {
-        const loader = new GLTFLoader();
-        loader.load('/rigged_black_cat_one.glb', (gltf) => {
-            this.model = gltf.scene;
-            this.model.scale.set(0.5, 0.5, 0.5);
-            this.scene.add(this.model);
+        return new Promise((resolve, reject) => {
+            const loader = new GLTFLoader();
+            loader.load('/rigged_black_cat_one.glb', (gltf) => {
+                this.model = gltf.scene;
+                this.model.scale.set(0.5, 0.5, 0.5);
+                this.scene.add(this.model);
 
-            this.mixer = new THREE.AnimationMixer(this.model);
-            
-            if (gltf.animations.length > 0) {
-                const walkAnimation = gltf.animations[0]; 
-                this.animations.walk = this.mixer.clipAction(walkAnimation);
-            }
+                this.mixer = new THREE.AnimationMixer(this.model);
+                
+                if (gltf.animations.length > 0) {
+                    const walkAnimation = gltf.animations[0]; 
+                    this.animations.walk = this.mixer.clipAction(walkAnimation);
+                }
 
-            this.isLoaded = true;
-        }, undefined, (error) => {
-            console.error(error);
+                this.isLoaded = true;
+                resolve();
+            }, undefined, (error) => {
+                console.error(error);
+                reject(error);
+            });
         });
     }
 
