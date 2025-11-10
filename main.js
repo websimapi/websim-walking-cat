@@ -50,7 +50,7 @@ class Game {
 
         this.cat.loadPromise.then(() => {
             this.setupGUI();
-            this.orbitControls.target.copy(this.cat.model.position);
+            this.orbitControls.target.copy(this.cat.base.position);
             this.orbitControls.update();
         });
 
@@ -68,9 +68,9 @@ class Game {
         catScaleFolder.add(this.cat.model.scale, 'z', 0.1, 2).name('Z');
 
         const catRotationFolder = catFolder.addFolder('Rotation');
-        catRotationFolder.add(this.cat.model.rotation, 'x', 0, Math.PI * 2).name('X');
-        catRotationFolder.add(this.cat.model.rotation, 'y', 0, Math.PI * 2).name('Y');
-        catRotationFolder.add(this.cat.model.rotation, 'z', 0, Math.PI * 2).name('Z');
+        catRotationFolder.add(this.cat.base.rotation, 'x', 0, Math.PI * 2).name('X');
+        catRotationFolder.add(this.cat.base.rotation, 'y', 0, Math.PI * 2).name('Y');
+        catRotationFolder.add(this.cat.base.rotation, 'z', 0, Math.PI * 2).name('Z');
         catFolder.open();
     }
 
@@ -89,12 +89,12 @@ class Game {
             const moveDirection = this.controls.getDirection();
 
             // Store position before update
-            const oldPosition = this.cat.model.position.clone();
+            const oldPosition = this.cat.base.position.clone();
 
             this.cat.update(deltaTime, moveDirection);
 
             // Camera follow logic
-            const newPosition = this.cat.model.position;
+            const newPosition = this.cat.base.position;
             const delta = new THREE.Vector3().subVectors(newPosition, oldPosition);
 
             // Move camera by the same amount the cat moved

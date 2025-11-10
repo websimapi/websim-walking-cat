@@ -4,6 +4,9 @@ import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
 export class Cat {
     constructor(scene) {
         this.scene = scene;
+        this.base = new THREE.Object3D();
+        this.scene.add(this.base);
+
         this.model = null;
         this.mixer = null;
         this.animations = {};
@@ -20,7 +23,7 @@ export class Cat {
             loader.load('/rigged_black_cat_one.glb', (gltf) => {
                 this.model = gltf.scene;
                 this.model.scale.set(0.5, 0.5, 0.5);
-                this.scene.add(this.model);
+                this.base.add(this.model);
 
                 this.mixer = new THREE.AnimationMixer(this.model);
                 
@@ -55,7 +58,7 @@ export class Cat {
             
             // Move model
             const moveVector = moveDirection.clone().multiplyScalar(this.speed * deltaTime);
-            this.model.position.add(moveVector);
+            this.base.position.add(moveVector);
 
         } else {
             if (this.currentAction === 'walk') {
